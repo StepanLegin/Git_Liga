@@ -1,6 +1,5 @@
 package UI;
 
-
 import io.github.bonigarcia.wdm.WebDriverManager;
 import org.openqa.selenium.By;
 import org.openqa.selenium.JavascriptExecutor;
@@ -9,6 +8,7 @@ import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.remote.CapabilityType;
+import org.testng.Assert;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
@@ -17,52 +17,46 @@ public class TextBoxTest {
 
     public WebDriver driver;
 
-
     @BeforeClass
-    public void SetUp() {
+    public void setup(){
         WebDriverManager.chromedriver().setup();
         ChromeOptions chromeOptions = new ChromeOptions();
+        chromeOptions.addArguments("--headless");
         chromeOptions.setCapability(CapabilityType.PAGE_LOAD_STRATEGY,"eager");
         driver = new ChromeDriver(chromeOptions);
         driver.manage().window().maximize();
-
     }
 
     @AfterClass
     public void tearDown(){
-
         driver.quit();
     }
 
-    @Test
-    public void checkTextBox(){
-
+    @Test(description = "Перейти на страницу 'Text Box' , внести валидные значения во все поля ," +
+            " нажать на кнопку 'Submit'")
+    public void step_01(){
         driver.get("https://demoqa.com/text-box");
 
         WebElement userNameInput = driver.findElement(By.xpath("//input[@id='userName']"));
-        userNameInput.sendKeys("Stepan");
+        userNameInput.sendKeys("Maxim");
 
         WebElement userEmailInput = driver.findElement(By.xpath("//input[@id='userEmail']"));
-        userEmailInput.sendKeys("test@ya.ru");
+        userEmailInput.sendKeys("max@yandex.ru");
 
-        WebElement currentAdressTextArea = driver.findElement(By.xpath("//textarea[@id='currentAddress']"));
-        currentAdressTextArea.sendKeys("NN");
+        WebElement currentAddressTextArea = driver.findElement(By.xpath("//textarea[@id='currentAddress']"));
+        currentAddressTextArea.sendKeys("Kursk");
 
-        WebElement permanentAdressTextArea = driver.findElement(By.xpath("//textarea[@id='permanentAddress']"));
-        permanentAdressTextArea.sendKeys("NN");
+        WebElement permanentAddressTextArea = driver.findElement(By.xpath("//textarea[@id='permanentAddress']"));
+        permanentAddressTextArea.sendKeys("Kursk");
 
-
-        WebElement buttonSubmit = driver.findElement(By.xpath("//button[@id='submit']"));
+        WebElement button = driver.findElement(By.xpath("//button[@id='submit']"));
         JavascriptExecutor js = (JavascriptExecutor) driver;
-        js.executeScript("arguments[0].scrollIntoView();", buttonSubmit);
-        buttonSubmit.click();
+        js.executeScript("arguments[0].scrollIntoView();", button);
+        button.click();
 
         WebElement userNameOutput = driver.findElement(By.xpath("//p[@id='name']"));
-
         WebElement userEmailOutput = driver.findElement(By.xpath("//p[@id='email']"));
-
         WebElement currentAddressOutput = driver.findElement(By.xpath("//p[@id='currentAddress']"));
-
         WebElement permanentAddressOutput = driver.findElement(By.xpath("//p[@id='permanentAddress']"));
 
         String name = userNameOutput.getText();
@@ -70,26 +64,17 @@ public class TextBoxTest {
         String currAddress = currentAddressOutput.getText();
         String permAddress = permanentAddressOutput.getText();
 
-        System.out.println("Name : " + name + " , email : " + email + " , current Address : "
-                + currAddress + " , permanent Adress : " + permAddress);
+        System.out.println("Name : " + name + " , email : " + email
+                + " , current address : " + currAddress + " , permanent address : " + permAddress);
 
-//        Assert.assertTrue(name.contains("Stepan"), "Message");
-
-//        Assert.assertEquals(email, "email");
-
-
-//        try {
-//            Thread.sleep(4000);
-//        } catch (InterruptedException e) {
-//            throw new RuntimeException((e));
-//        }
-
+//        Assert.assertTrue(name.contains("Kursk"),"Message");
+        Assert.assertEquals(email,"Email:max@yandex.ru");
     }
 
-    @Test
-    public void checkTitleTextBox(){
-
+    @Test(description = "Получить title страницы - DemoQA")
+    public void step_02(){
         String pageTitle = driver.getTitle();
-        System.out.println(pageTitle);
+        Assert.assertEquals(pageTitle, "DEMOQA");
+        System.out.println("Title : " + pageTitle);
     }
 }
